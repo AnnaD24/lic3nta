@@ -50,4 +50,7 @@ public class CategoryService {
         return this.categoryRepository.findByName(categoryName);
     }
 
+    public Collection<Category> getSubcategories(Long parentId) {
+        return this.categoryRepository.findByParentId(parentId);
+    }
 }

@@ -1,8 +1,6 @@
 package com.ex.licenta1.api;
 
 import com.ex.licenta1.domain.entities.Category;
-import com.ex.licenta1.domain.entities.Question;
-import com.ex.licenta1.domain.entities.Survey;
 import com.ex.licenta1.domain.services.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,11 +8,12 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
 
 @EnableSwagger2
 @RestController
-@RequestMapping(name = "/category")
+@RequestMapping("/category")
 public class CategoryController {
     private CategoryService categoryService;
 
@@ -24,8 +23,19 @@ public class CategoryController {
 
     @GetMapping()
     @ResponseBody
-    public ResponseEntity<Collection<Category>> getCategories(){
+    public ResponseEntity<Collection<Category>> getAll(){
         return new ResponseEntity<>(categoryService.get(), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    @ResponseBody
+    public ResponseEntity<Collection<Category>> getSubcategories(@PathVariable(name="id") String parentId){
+        try{
+            Long id = Long.parseLong(parentId);
+            return new ResponseEntity<>(categoryService.getSubcategories(id),HttpStatus.OK);
+        }catch(NumberFormatException e){
+            return new ResponseEntity<>(new HashSet<>(),HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping()
